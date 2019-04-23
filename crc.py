@@ -13,7 +13,7 @@ def string_to_ascii_dict(string):
     return ans
 
 
-def xor_in_list(x, y):
+def xor_in_string(x, y):
     ans = ""
     if len(x) != len(y):
         raise ValueError(f'Not the same length: {x} and {y}\n')
@@ -26,14 +26,14 @@ def xor_operation(code, polynomial):
     code = code.ljust(len(code)+len(polynomial)-1, "0")
     x = code[0:len(polynomial)]
     y = polynomial if int(x[0]) != 0 else "0" * len(polynomial)
-    previews = xor_in_list(x, y)
+    previews = xor_in_string(x, y)
 
     for i in range(len(code)-len(polynomial)):
 
         x = previews[1:] + code[i+len(polynomial)]
         y = polynomial if int(x[0]) != 0 else "0" * len(polynomial)
 
-        previews = xor_in_list(x, y)
+        previews = xor_in_string(x, y)
     return previews[1:]
 
 
