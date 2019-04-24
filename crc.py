@@ -67,7 +67,7 @@ class CRC:
                 ans += chr(int(char, 2))
             else:
                 ans += chr(95)
-        print(ans)
+        print(ans, file=sys.stdout)
 
 
 operation = sys.argv[1]
