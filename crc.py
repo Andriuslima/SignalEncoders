@@ -4,12 +4,13 @@ from operator import xor
 ENCODER = '-e'
 DECODER = '-d'
 DEBUG = False
+ASCII_LEN = 7
 
 
 def string_to_ascii_dict(string):
     ans = {}
     for char in string:
-        ans[char] = bin(ord(char))[2:].rjust(7, "0")
+        ans[char] = bin(ord(char))[2:].rjust(ASCII_LEN, "0")
     return ans
 
 
@@ -22,25 +23,25 @@ def xor_in_string(x, y):
     return ans
 
 
-def xor_operation(code, polynomial):
-    code = code.ljust(len(code)+len(polynomial)-1, "0")
-    x = code[0:len(polynomial)]
-    y = polynomial if int(x[0]) != 0 else "0" * len(polynomial)
+def xor_operation(code, poly):
+    code = code.ljust(len(code)+len(poly)-1, "0")
+    x = code[0:len(poly)]
+    y = poly if int(x[0]) != 0 else "0" * len(poly)
     previews = xor_in_string(x, y)
 
-    for i in range(len(code)-len(polynomial)):
+    for i in range(len(code)-len(poly)):
 
-        x = previews[1:] + code[i+len(polynomial)]
-        y = polynomial if int(x[0]) != 0 else "0" * len(polynomial)
+        x = previews[1:] + code[i+len(poly)]
+        y = poly if int(x[0]) != 0 else "0" * len(poly)
 
         previews = xor_in_string(x, y)
     return previews[1:]
 
 
 class CRC:
-    def __init__(self, msg, polynomial):
-        self.msg = msg
-        self.polynomial = polynomial
+    def __init__(self, message, poly):
+        self.msg = message
+        self.polynomial = poly
         self.chars = string_to_ascii_dict(msg)
         self.char_encoded = dict()
 
@@ -59,10 +60,11 @@ class CRC:
             raise ValueError(f'Not the correct length: {self.msg}\n')
         for i in range(0, len(self.msg)-1, 3):
             char = bin(int(self.msg[i:i+2], 16))[2:]
-            code = bin(int( self.msg[i+2], 16))[2:].zfill(4)
+            code = bin(int(self.msg[i+2], 16))[2:].zfill(4)
 
             result = xor_operation(char+code, self.polynomial)
-            if DEBUG: print(f'char: {char} | poly: {code} | result: {result}')
+            if DEBUG:
+                print(f'char: {char} | poly: {code} | result: {result}')
             if int(result) == 0:
                 ans += chr(int(char, 2))
             else:
